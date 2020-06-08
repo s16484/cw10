@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIDatabaseFirst.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIDatabaseFirst.Controllers
 {
-    public class StudentsController : Controller
+    [ApiController]
+    [Route("api/students")]
+    public class StudentsController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly s16484Context _context;
+
+        public StudentsController(s16484Context context)
         {
-            return View();
+            _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult GetStudents()
+        {
+            return Ok();
         }
     }
 }
