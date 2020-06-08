@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIDatabaseFirst.Models;
+using APIDatabaseFirst.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,93 +13,38 @@ namespace APIDatabaseFirst.Controllers
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-        private readonly s16484Context _context;
-
-        public StudentsController(s16484Context context)
+        private readonly IStudentDbService _dbservice;
+        public StudentsController(IStudentDbService dbservice)
         {
-            _context = context;
+            _dbservice = dbservice;
         }
 
         [HttpGet]
         public IActionResult GetStudents()
         {
-            var result = _context.Student
-                .Select(s => new
-                {
-                    s.IndexNumber,
-                    s.FirstName,
-                    s.LastName
-                }).ToList() ;
-
+            var result = _dbservice.GetStudents();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetStudent([FromRoute] string id)
         {
-            var result = _context.Student
-                .Select(s => new
-                {
-                    s.IndexNumber,
-                    s.FirstName,
-                    s.LastName,
-                    s.BirthDate,
-                    s.IdEnrollment,
-                    s.Role
-                })
-                .Where(s => s.IndexNumber.Equals(id))
-                .ToList();
+            var result = _dbservice.GetStudent(id);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateStudent([FromRoute]string id, [FromBody] Student stud)
+        public IActionResult UpdateStudent([FromRoute] string id, [FromBody] Student stud)
         {
-            var student = new Student
-            {
-                IndexNumber = id,
-                FirstName = stud.FirstName,
-                LastName = stud.LastName,
-                BirthDate = stud.BirthDate,
-                IdEnrollment = stud.IdEnrollment,
-                Role = stud.Role
-            };
-            _context.Attach(student);
-
-            if (stud.FirstName != null){
-                _context.Entry(student).Property("FirstName").IsModified = true;
-            }
-            if (stud.LastName != null){
-                _context.Entry(student).Property("LastName").IsModified = true;
-            }
-            if (stud.BirthDate != default){
-                _context.Entry(student).Property("BirthDate").IsModified = true;
-            }
-            if (stud.IdEnrollment != default)
-            {
-                _context.Entry(student).Property("IdEnrollment").IsModified = true;
-            }
-            if (stud.Role != null){
-                _context.Entry(student).Property("Role").IsModified = true;
-            }
-
-            _context.SaveChanges();
+            _dbservice.UpdateStudent(id,stud);
             return Ok("Aktualizacja zakończona powodzeniem");
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteStudent(string id)
         {
-            var student = new Student
-            {
-                IndexNumber = id
-            };
-            _context.Attach(student);
-            _context.Remove(student);
-            _context.SaveChanges();
-
-            var result = "Usunięto studenta: " + id;
-            return Ok(result);
+            _dbservice.DeleteStudent(id);
+            return Ok("Usunięto studenta: " + id);
         }
 
 

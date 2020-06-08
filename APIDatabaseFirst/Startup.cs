@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIDatabaseFirst.Models;
+using APIDatabaseFirst.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace APIDatabaseFirst
         {
             // Scaffold-DbContext 'Data Source=db-mssql;Initial Catalog=s16484;Integrated Security=True' Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
             services.AddDbContext<s16484Context>();
+            services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
             services.AddControllers();
         }
 
