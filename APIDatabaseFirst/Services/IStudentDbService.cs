@@ -1,4 +1,5 @@
-﻿using APIDatabaseFirst.DTOs.Responses;
+﻿using APIDatabaseFirst.DTOs.Request;
+using APIDatabaseFirst.DTOs.Responses;
 using APIDatabaseFirst.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,9 @@ namespace APIDatabaseFirst.Services
         public IEnumerable<dynamic> GetStudent(string id);
         public void UpdateStudent(string id, Student stud);
         public void DeleteStudent(string id);
+
+        public EnrollStudentResponse EnrollStudent(EnrollStudentRequest request);
+        public PromoteStudentsResponse PromoteStudents(PromoteStudentsRequest request);
 
     }
 }
